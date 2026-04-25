@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CLS Student Homepage</title>
+    <link rel="icon" type="image/x-icon" href="images/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-icon-180x180.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6ba81e">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fafbfc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --text-soft: #94a3b8;
+            /* Student theme: CLS Lime */
+            --cls-green: #6ba81e;
+            --cls-green-light: #a3e635;
+            --cls-green-50: #f7fee7;
+            --cls-green-700: #3f6212;
+            --cls-green-100: #ecfccb;
+            --danger: #e63946;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-pill: 999px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.06);
+            --font: 'Pretendard Variable', Pretendard, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            margin: 0 -24px 24px;
+            padding: 0 24px;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .logo-img {
+            height: 26px;
+            width: auto;
+            display: inline-block;
+            vertical-align: baseline;
+            user-select: none;
+        }
+
+        .logo-sub {
+            font-size: 13px;
+            color: var(--text-soft);
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            min-height: 36px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            font-family: inherit;
+            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            background: var(--cls-green-50);
+            border-color: var(--cls-green-100);
+            color: var(--cls-green-700);
+        }
+
+        .filter-tab.active {
+            background: var(--cls-green);
+            border-color: var(--cls-green);
+            color: white;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+            min-height: 160px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            cursor: pointer;
+            transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .card-open-cta {
+            display: none;
+            margin-top: auto;
+            padding: 7px 8px;
+            background: var(--cls-green-50);
+            color: var(--cls-green-700);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid rgba(107, 168, 30, 0.18);
+            letter-spacing: 0.01em;
+        }
+
+        .card-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .card:hover .card-actions,
+        .card:focus-within .card-actions { opacity: 1; }
+
+        .card-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .card-action svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .card-action:hover {
+            background: var(--bg);
+            color: var(--text);
+            border-color: var(--border-strong);
+        }
+
+        .card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-category {
+            display: inline-flex;
+            align-self: flex-start;
+            padding: 3px 10px;
+            background: rgba(148, 163, 184, 0.12);
+            color: var(--text-muted);
+            border-radius: var(--radius-pill);
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .card-title {
+            font-size: 15px;
+            color: var(--text);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.35;
+        }
+
+        .card-description {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-url {
+            color: var(--text-soft);
+            font-size: 12px;
+            margin-top: auto;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .card-url::before {
+            content: '↗';
+            font-size: 13px;
+            color: var(--cls-green);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+        }
+
+        .empty-state-icon { font-size: 2.4em; margin-bottom: 14px; opacity: 0.6; }
+        .empty-state h3 { color: var(--text); font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 13px; }
+
+        .loader {
+            grid-column: 1 / -1;
+            border: 2.5px solid var(--border);
+            border-top: 2.5px solid var(--cls-green);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 0.7s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            font-size: 13.5px;
+            font-weight: 500;
+            animation: slideIn 0.25s ease;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background: var(--cls-green-50);
+            color: var(--cls-green-700);
+            border-color: var(--cls-green-100);
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card { animation: fadeInUp 0.35s ease; }
+
+        @media (max-width: 768px) {
+            body { font-size: 14px; }
+            .container { padding: 0 16px; }
+            .header { margin: 0 -16px 16px; padding: 0 16px; }
+            .header-inner { height: 44px; }
+
+            .filter-tabs {
+                gap: 6px;
+                margin-bottom: 16px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 4px;
+                margin-left: -16px;
+                margin-right: -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .filter-tabs::-webkit-scrollbar { display: none; }
+            .filter-tab { flex-shrink: 0; padding: 7px 14px; font-size: 12.5px; min-height: 34px; }
+
+            .cards-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 28px;
+            }
+
+            .card { padding: 10px 10px 8px; gap: 6px; border-radius: 14px; }
+            .card-description { display: none; }
+            .card-url { display: none; }
+
+            .card-category { font-size: 10.5px; padding: 2px 8px; }
+
+            .card-title {
+                font-size: 13px;
+                line-height: 1.3;
+                font-weight: 600;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                word-break: keep-all;
+                padding-right: 36px;
+                min-height: 2.6em;
+            }
+
+            .card-open-cta { display: block; }
+
+            .card-actions { opacity: 1; top: 6px; right: 6px; gap: 3px; }
+            .card-action {
+                width: 24px;
+                height: 24px;
+                border-radius: 7px;
+                font-size: 12px;
+                border-color: transparent;
+                background: rgba(241, 245, 249, 0.9);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .cards-container { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .card { padding: 10px 8px 7px; border-radius: 12px; gap: 5px; }
+            .card-title { font-size: 12.5px; padding-right: 32px; }
+            .card-open-cta { padding: 6px 6px; font-size: 10.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-inner">
+                <div class="logo">
+                    <img class="logo-img" src="images/cls-logo.png" alt="CLS">
+                    <span class="logo-sub">Student</span>
+                </div>
+            </div>
+        </header>
+
+        <div id="alertContainer"></div>
+
+        <div class="filter-tabs" id="filterTabs"></div>
+
+        <div id="cardsContainer" class="cards-container">
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2KEIbPsDklKkob3VDnxKk8qLLHGlaKtYzrnlmLlJ6fqHUdWVfTsVO0frPHtUvCz_E/exec';
+        const AUDIENCE = 'student';
+        const WEBSITES_KEY = 'clsStudentWebsites';
+
+        let websites = [];
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderFilterTabs();
+            loadWebsites();
+            setupEventListeners();
+        });
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getCategoriesFromData() {
+            return Array.from(new Set(websites.map(w => w.category).filter(Boolean))).sort();
+        }
+
+        function renderFilterTabs() {
+            const container = document.getElementById('filterTabs');
+            const cats = getCategoriesFromData();
+            const categories = ['all', ...cats];
+            container.innerHTML = categories.map(cat => {
+                const label = cat === 'all' ? '전체보기' : cat;
+                const isActive = cat === currentFilter;
+                return `<button class="filter-tab${isActive ? ' active' : ''}" data-category="${escapeHtml(cat)}">${escapeHtml(label)}</button>`;
+            }).join('');
+        }
+
+        function setupEventListeners() {
+            document.getElementById('filterTabs').addEventListener('click', function(e) {
+                const tab = e.target.closest('.filter-tab');
+                if (!tab) return;
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.category;
+                renderWebsites();
+            });
+
+            document.getElementById('cardsContainer').addEventListener('click', function(e) {
+                const actBtn = e.target.closest('.card-action');
+                const card = e.target.closest('.card');
+                if (!card) return;
+                const id = card.dataset.id;
+                const site = websites.find(s => String(s.id) === String(id));
+                if (!site) return;
+
+                if (actBtn) {
+                    e.stopPropagation();
+                    const act = actBtn.dataset.act;
+                    if (act === 'share') handleShare(site);
+                    return;
+                }
+                if (e.target.closest('a.card-url')) return;
+                openWebsite(site.url);
+            });
+        }
+
+        async function handleShare(site) {
+            const shareData = {
+                title: site.title,
+                text: `${site.title} - ${site.category}`,
+                url: site.url
+            };
+            try {
+                if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                    await navigator.share(shareData);
+                    return;
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+            }
+            try {
+                await navigator.clipboard.writeText(site.url);
+                showAlert('링크가 복사되었습니다.', 'success');
+            } catch (e) {
+                prompt('아래 링크를 복사하세요:', site.url);
+            }
+        }
+
+        function saveWebsitesLocal() {
+            try {
+                localStorage.setItem(WEBSITES_KEY, JSON.stringify(websites));
+            } catch (e) {}
+        }
+        function loadWebsitesLocal() {
+            try {
+                const raw = localStorage.getItem(WEBSITES_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) { return null; }
+        }
+
+        async function loadWebsites() {
+            const local = loadWebsitesLocal();
+            if (local && local.length) {
+                websites = local;
+                renderFilterTabs();
+                renderWebsites();
+            }
+
+            if (!SCRIPT_URL) return;
+            try {
+                const response = await fetch(SCRIPT_URL + '?action=get&audience=' + encodeURIComponent(AUDIENCE));
+                const data = await response.json();
+                if (data && data.success && Array.isArray(data.data)) {
+                    websites = data.data;
+                    saveWebsitesLocal();
+                    renderFilterTabs();
+                    renderWebsites();
+                }
+            } catch (error) {
+                if (!local || !local.length) {
+                    websites = [];
+                    renderFilterTabs();
+                    renderWebsites();
+                }
+            }
+        }
+
+        function renderWebsites() {
+            const container = document.getElementById('cardsContainer');
+
+            let filteredWebsites = websites;
+            if (currentFilter !== 'all') {
+                filteredWebsites = websites.filter(site => site.category === currentFilter);
+            }
+
+            if (filteredWebsites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>아직 공유된 홈페이지가 없습니다</h3>
+                        <p>${currentFilter === 'all' ? '강사님이 자료를 공유하면 여기에 나타납니다.' : '이 카테고리에는 아직 자료가 없습니다.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredWebsites.map(site => {
+                let hostname = '';
+                try { hostname = new URL(site.url).hostname; } catch(e) {}
+                return `
+                <div class="card" data-id="${escapeHtml(String(site.id))}" tabindex="0">
+                    <div class="card-actions">
+                        <button type="button" class="card-action" data-act="share" title="공유" aria-label="공유">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                        </button>
+                    </div>
+                    <span class="card-category">${escapeHtml(site.category)}</span>
+                    <h3 class="card-title">${escapeHtml(site.title)}</h3>
+                    <p class="card-description">${escapeHtml(site.description || '설명이 없습니다.')}</p>
+                    ${hostname ? `<a href="${escapeHtml(site.url)}" class="card-url" target="_blank" rel="noopener">${escapeHtml(hostname)}</a>` : ''}
+                    <div class="card-open-cta" aria-hidden="true">↗ 열기</div>
+                </div>
+            `;}).join('');
+        }
+
+        function openWebsite(url) {
+            window.open(url, '_blank', 'noopener');
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            setTimeout(() => { alert.remove(); }, 3000);
+        }
+    </script>
+</body>
+</html>
